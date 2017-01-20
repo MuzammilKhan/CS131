@@ -1,0 +1,63 @@
+------- Warm-up Discussion: convert_grammar -------
+	This function takes in the old grammar from homework 1 and converts it
+to the homework 2 style grammar. 
+input: grammar which is of the form (start_symbol,rules)
+output: gramar which is of the form (start_symbol, production function)
+	-production function returns the alternative list for the start symbol.
+I realized this function essentially just needs to find the alternative list
+for some given symbol. Thus I made a helper function that did just that.
+Furthermore, I then realized that this could be written to take advantage of
+tail recursion.
+
+------- Main Problem Discussion: parse_prefix -------
+This function takes in a grammar and returns a matcher. The matcher when
+applied to a fragment and acceptor function returns the output of the acceptor
+if the acceptor accepts it. 
+
+Initially I was stumped and wasn't sure how to begin. Then after a while I
+thought that I would have to use some tree like structure to parse the input.
+However, I still wasn't sure exactly how I would do so.
+
+I looked at the hint provided of a previous homework 2. I saw that the main
+functionality came from the use of make_matcher which would call 
+make_or_matcher or make_appended matchers.
+
+In discussion section my TA showed some basic ideas of  how to use 
+make_matcher to see if part of the fragment matches. Then he talked about
+using make_or_matchers to go down the matchers and see which one works. Then
+he mentioned the tree like structure of ands and ors. The and which is like
+make_appended_matchers is going to check one fragment and the make_or_matcher
+tries out alternatives from the rules. 
+
+I was still a bit confused as how to use them as the example given by the TA
+seemed as if they were very seperate. Then in class people started asking
+questions about how the functions were mutually recursive and thus would
+need the and keyword when defining the functions. This was a big hint for me
+to figure out how to get the functions to work properly. I realized that each
+of these functions would have to call the other one.  This gave me the
+realization to do the following:
+
+General functionality:
+-parse_prefix would begin by calling make_or_matcher.
+-make_or_matcher will go down the alternative list and try 
+	make_appended_matchers (which is the 'and' function)  on each
+	rule returning the result if it matches and None otherwise or if the
+	rules run out.
+-make_and_matcher will check if the fragment is a nonterminal and will call
+	make_or_matcher in that case. If the fragment was a terminal then it
+	will call make_and_matcher checking the rest of the fragment,
+	returning the output of the acceptor if everything matches else None.
+
+Limitations:
+-The parser is prone to entering an infinite loop and never ending in two
+	cases:
+	* mutually recursive grammars
+		ex: A-> B and B->A
+	* grammars that branch out indefinetly
+		ex: A -> A A 
+-The parser also seems to match the rules that come first, so if there is a
+	rule that fit better later on that one won't be matched.
+-The parser matches by going through the rules sequentially which means that
+        rules that apply better can be ignored which means ambiguous grammars
+	can behave differently as shown in the test cases provided which tests
+	the dangling else ambigous gramamr

@@ -1,0 +1,15 @@
+Comments describing functions are in hw4.pl
+
+Assumptions used:
+- From piazza: "1. An error token can be part of a word, which means the example is wrong and should succeed with  M=[m,o,r,s,e,#,as];"
+-If there are two error tokens after a space (#), then the first error token will delete the previous word, spaace, and itself. Next
+ error token counts as part of the new word now and thus won't delete anything before it. This second error token can be deleted by
+ another error token that comes after it.
+
+ Example behaviour resulting from assumptions:
+ - [m,o,r,s,e,#,c,o,error,error,error,as] => [m,o,r,s,e,#,as]
+ - [m,o,r,s,e,#,c,o,error,error,as] => [m,o,r,s,e,#,error,as]
+ - [m,o,r,s,e,#,c,o,error,as] => [m,o,r,s,e,#,as]
+ - [m,o,r,s,e,#,error,error,error,as] => [as]
+ - [m,o,r,s,e,#,error,error,as] => [error, as]
+ - [m,o,r,s,e,#,error,as] => [error, as]

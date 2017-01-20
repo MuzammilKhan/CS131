@@ -1,0 +1,4 @@
+The implementation passes all of the test cases. However, I feel that I had to hard code some of the functions
+in a sense in order to pass all of the test cases. Therefore, some of the functions like car-ld might fail for
+listdiffs with a lot of elements or when we have lots of calls to car-ld mixed with calls to cdr-ld resulting
+in some unexpected results. Although this is a hunch and may not be true. 
